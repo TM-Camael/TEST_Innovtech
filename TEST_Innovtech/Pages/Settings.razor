@@ -1,0 +1,8 @@
+@page "/settings"
+@inject Services.TimerData TimerData
+
+
+<h1>Paramètres</h1>
+
+<p>Saisir le décompte du timer</p>
+<input type="number" @bind="TimerData.Time" />
