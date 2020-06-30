@@ -1,26 +1,25 @@
-﻿// Classe permettant de récupérer les données des timers utilisés par les pages Razor
+﻿// Classe permettant de récupérer les données du nombre modifié grâce au timer d'une page Razor à une autre
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace TEST_Innovtech.Services
 {
-    public class TimerData
+    public class NumberData
     {
-        private int _elapsedTime;
-        public int ElapsedTime
+        private int _number;
+        public int Number
         {
             get
             {
-                return _elapsedTime;
+                return _number;
             }
 
             set
             {
-                _elapsedTime = value;
+                _number = value;
                 NotifyDataChanged();
             }
         }

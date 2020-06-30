@@ -1,0 +1,15 @@
+﻿<!-- Page Blazor permettant d'afficher le nombre manipulé par le timer -->
+
+@page "/display"
+@inject TEST_Innovtech.Services.NumberData NumberData 
+
+<h1>Affichage de la valeur</h1>
+
+<p>La valeur obtenue après l'utilisation du timer : @NumberData.Number</p>
+
+@code{
+    protected override void OnInitialized()
+    {
+        NumberData.OnChange += StateHasChanged;
+    }
+}

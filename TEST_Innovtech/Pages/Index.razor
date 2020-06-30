@@ -1,6 +1,86 @@
-﻿@page "/"
+﻿<!-- Page Blazor permettant de gérer le timer et de l'utiliser -->
+
+@page "/"
+@using System.Timers
+@inject TEST_Innovtech.Services.NumberData NumberData
+@inject TEST_Innovtech.Services.TimerData TimerData
 
 <h1>Timer</h1>
 
-Ceci est une application permet
+<label for="interval">Interval de temps : </label>
+<input type="number" id="interval" @bind="timerCount" />
+<p style="color:red">@error</p>
+<br />
+<label for="baseNumber">Nombre à décrémenter : </label>
+<input type="number" id="baseNumber" @bind="Number" />
+<br />
 
+<button class="btn btn-primary" @onclick="@(async ()=> { StartTimer();})">Démarrer</button>
+<button class="btn-danger" @onclick="@(()=> {decreaseTimer.Stop(); elapsedTimer.Stop(); })">Stop</button>
+<br />
+
+<p>@TimerData.ElapsedTime secondes se sont déroulées pendant le dernier lancement du timer</p>
+<p>Valeur actuelle : @NumberData.Number</p>
+
+@code {
+    private int timerCount;
+    private int Number;
+    private string error;
+    private static System.Timers.Timer decreaseTimer;
+    private static System.Timers.Timer elapsedTimer;
+
+    //Permet une mise à jour de l'UI dès que les variables sont modifiées
+    protected override void OnInitialized()
+    {
+        NumberData.OnChange += StateHasChanged;
+        TimerData.OnChange += StateHasChanged;
+    }
+
+
+    private bool formCheck() // Permet de vérifier que l'intervalle de déclenchement du timer n'est pas une valeur négative
+    {
+        error = null;
+        bool result = true;
+        if (timerCount <= 0)
+        {
+            result = false;
+            error += "Veuillez saisir un nombre supérieur à 0";
+            StateHasChanged();
+        }
+        return result;
+    }
+
+    private void StartTimer()
+    {
+        if (formCheck() == true)
+        {
+            TimerData.ElapsedTime = 0;
+            NumberData.Number = Number;
+
+            // Mise en marche du timer qui décrémente le nombre
+            decreaseTimer = new System.Timers.Timer(timerCount * 1000);
+            decreaseTimer.Elapsed += OnDecreaseTimedEvent;
+            decreaseTimer.AutoReset = true;
+            decreaseTimer.Enabled = true;
+
+            // Mise en marche du timer qui affiche les secondes passées depuis le lancement du timer
+            elapsedTimer = new System.Timers.Timer(1000);
+            elapsedTimer.Elapsed += OnElapseTimedEvent;
+            elapsedTimer.AutoReset = true;
+            elapsedTimer.Enabled = true;
+        }
+    }
+
+    private void OnDecreaseTimedEvent(Object source, ElapsedEventArgs e)
+    {
+        NumberData.Number--;
+        StateHasChanged();
+    }
+
+    private void OnElapseTimedEvent(Object source, ElapsedEventArgs e)
+    {
+        TimerData.ElapsedTime++;
+        StateHasChanged();
+    }
+
+}

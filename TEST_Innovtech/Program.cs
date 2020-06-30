@@ -18,7 +18,10 @@ namespace TEST_Innovtech
             builder.RootComponents.Add<App>("app");
 
             builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+
+            // Ajout des services TimerData et NumberData pour les utiliser sur les composants Razor
             builder.Services.AddSingleton<Services.TimerData>();
+            builder.Services.AddSingleton<Services.NumberData>();
 
             await builder.Build().RunAsync();
         }
